@@ -1,9 +1,4 @@
----
-output: 
-  html_document: 
-    keep_md: yes
-    self_contained: no
----
+
 ## Introduction
 
 This repository contains the R code for different machine learning algorithms. Accelerometer data is used to predict how well individuals perform weight-lifting exercises. The dataset comes from Veloso et al., (2013) and it contains data from accelerometers on the belt, forearm, arm, and dumbbell from 6 individuals.  
