@@ -14,6 +14,6 @@ The training dataset is available [here](https://d396qusza40orc.cloudfront.net/p
 
 * The rendered html version of the code is found  [here](https://reyvaz.github.io/MachineLearningWL/barbellRmd.html). 
 
-* To reproduce the results place the downloaded data files in the same working directory as the [barbellRmd.Rmd](https://reyvaz.github.io/MachineLearningWL/barbellRmd.Rmd) file. Or alter the file paths for the data in the code accordingly.   
+* To reproduce the results, place the downloaded data files in the same working directory as the [barbellRmd.Rmd](https://reyvaz.github.io/MachineLearningWL/barbellRmd.Rmd) file. Or alter the file paths for the data in the code accordingly.   
 
 * The file [barbellRmd.md](barbellRmd.md) contains the code and output rendered in a markdown file. 
