@@ -12,3 +12,4 @@ knitr
 randomForestSRC
 ggRandomForests
 pander
+corrplot

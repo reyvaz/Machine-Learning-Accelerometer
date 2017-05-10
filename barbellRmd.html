@@ -133,7 +133,7 @@ $(document).ready(function () {
 </ol>
 <pre class="r"><code>library(caret); library(dplyr); library(knitr); library(pander)
 library(rpart); library(rpart.plot); library(gbm)
-library(randomForest); library(ggRandomForests)</code></pre>
+library(randomForest); library(ggRandomForests); library(corrplot)</code></pre>
 </div>
 <div id="data-processing" class="section level2">
 <h2>Data Processing</h2>
@@ -167,7 +167,12 @@ inTrain  = createDataPartition(train$classe, p = 3/5)[[1]]
 training = train[ inTrain,]
 testing  = train[-inTrain,]</code></pre>
 <p><strong>Pre-processing</strong><br />
-The training dataset now contains <span class="math inline">\(11776\)</span> observations of <span class="math inline">\(53\)</span> variables, all cells with valid entries. Although correlation analysis (omitted here) showed a high correlation between a significant number of predictors, no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition was able to capture <span class="math inline">\(95\%\)</span> of the variance by reducing the number of components by over <span class="math inline">\(50\%\)</span> but accuracy was significantly compromised, while expediency gains were only minor. Furthermore, because of the nature of decision trees (i.e. they can choose equivalent splitting points) scaling or translational normalization is not necessary.</p>
+The training dataset now contains <span class="math inline">\(11776\)</span> observations of <span class="math inline">\(53\)</span> variables, all cells with valid entries. Although correlation analysis, as seen in the figure below, shows a high correlation between a significant number of predictors, no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition was able to capture <span class="math inline">\(95\%\)</span> of the variance by reducing the number of components by over <span class="math inline">\(50\%\)</span> but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.</p>
+<pre class="r"><code>par(xpd=TRUE)
+corrplot.mixed(cor(training[,-length(training)]), lower=&quot;color&quot;, upper=&quot;circle&quot;, mar=c(1,1,1,1),
+               tl.pos=&quot;lt&quot;, diag=&quot;n&quot;, title = &quot;Correlation Matrix Visualization&quot;,
+               order=&quot;hclust&quot;, hclust.method=&quot;complete&quot;, tl.cex = .65, tl.col =&quot;#656565&quot;)</code></pre>
+<p><img src="barbellRmd_files/figure-html/plotcorr-1.png" style="display: block; margin: auto;" /></p>
 </div>
 <div id="machine-learning-specifications" class="section level2">
 <h2>Machine Learning Specifications</h2>
