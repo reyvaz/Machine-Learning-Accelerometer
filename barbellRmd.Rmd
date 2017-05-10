@@ -10,8 +10,10 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, warning=FALSE, message=FALSE, cache = TRUE,
+                      fig.align = 'center')
 ```
+
 
 ## Summary  
 This analysis uses different machine learning algorithms on accelerometer data to predict how well individuals perform weight-lifting exercises. The dataset comes from Veloso et al., (2013) and it contains data from accelerometers on the belt, forearm, arm, and dumbbell from 6 individuals.
@@ -21,7 +23,7 @@ The participants were asked to perform one set of 10 repetitions of the unilater
 The following tests different machine learning algorithms, including CART, Random Forest, and Boosted GBM to predict how well the dumbbell biceps curl were performed (variable classe in the dataset).  The best performing algorithm is a Random Forest specification with $99.4\%$ accuracy, followed by a Boosted GBM with $94.3\%$ accuracy, both in the cross-validation dataset. 
 
 1. Necessary packages
-```{r packs, warning=FALSE, message=FALSE}
+```{r packs}
 library(caret); library(dplyr); library(knitr); library(pander)
 library(rpart); library(rpart.plot); library(gbm)
 library(randomForest); library(ggRandomForests); library(corrplot)
@@ -30,7 +32,7 @@ library(randomForest); library(ggRandomForests); library(corrplot)
 The training dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv). And the test dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv).   
 
 2. Data
-```{r data, results = "hide", cache = TRUE}
+```{r data, results = "hide"}
 test  <- read.csv("pml-testing.csv")
 train <- read.csv("pml-training.csv")
 names(train)
@@ -42,7 +44,7 @@ The original dataset contains $`r dim(train)[1]`$ observations of $`r dim(train)
         a. discard variables with near zero variance      
         b. discard variables irrelevant to prediction, columns 1-6      
         c. discard variables with 80% NAs or more
-```{r discard, cache = TRUE, results = "hide"}
+```{r discard, results = "hide"}
 nrzv  <- nearZeroVar(train)
 train <- train[,-nrzv]
 train <- train[, -c(1:6)]
@@ -54,7 +56,7 @@ train <- train[, -xNAs]
 Data is then split into a training dataset with 60% of observations for model training, and a testing dataset with the remaining 40% of observations for cross-validation.   
 
 4. Split data for cross-validation
-```{r split, cache = TRUE, results = "hide"}
+```{r split, results = "hide"}
 set.seed(400)
 inTrain  = createDataPartition(train$classe, p = 3/5)[[1]]
 training = train[ inTrain,]
@@ -64,7 +66,7 @@ testing  = train[-inTrain,]
 **Pre-processing**  
 The training dataset now contains $`r dim(training)[1]`$ observations of $`r dim(training)[2]`$ variables, all cells with valid entries. Although correlation analysis, as seen in the figure below, shows a high correlation between a significant number of predictors, no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition was able to capture $95\%$ of the variance by reducing the number of components by over $50\%$ but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.  
 
-```{r plotcorr, cache = TRUE, fig.width=7.5, fig.height=7.5, fig.align = 'center'}
+```{r plotcorr, fig.width=7.5, fig.height=7.5}
 par(xpd=TRUE)
 corrplot.mixed(cor(training[,-length(training)]), lower="color", upper="circle", mar=c(1,1,1,1),
                tl.pos="lt", diag="n", title = "Correlation Matrix Visualization",
@@ -76,13 +78,13 @@ corrplot.mixed(cor(training[,-length(training)]), lower="color", upper="circle",
 The following will test and compare the performance of 3 different machine learning algorithms: CART, Random Forest, and Boosted GBM. 
 
 5. First Model: Classification and Regression Tree (CART)
-```{r rcart, cache = TRUE}
+```{r rcart}
 rpart1    <- rpart(classe ~ ., method="class", data=training)
 testrpart <- predict(rpart1, newdata = testing[,-length(testing)], type = "class")
 cm1       <- confusionMatrix(testing$classe, testrpart)
 ```
 
-```{r plotcolor, cache = TRUE, echo = FALSE}
+```{r plotcolor, echo = FALSE}
 mycolors = list("#66b3ff", "#ff80d5", "#70db70", "#d580ff", "#ffd633")
 ```
 
@@ -92,13 +94,13 @@ rpart.plot(rpart1, main="Decision Tree (rpart)", type = 1, extra=0, cex = NULL,
 ```
 
 6. Second Model: Random Forest (RF)
-```{r rf, cache = TRUE, warning=FALSE, message=FALSE, results = "hide"}
+```{r rf, results = "hide"}
 rfm     <- randomForest(training[,-length(training)], training[,length(training)], ntree = 500)
 testrfm <- predict(rfm, newdata = testing[,-length(testing)])
 cm2     <- confusionMatrix(testing$classe, testrfm)
 ```
 
-```{r rf2, fig.width=7, echo = FALSE, fig.height=4, fig.align = 'center', cache = TRUE, warning=FALSE, message=FALSE,}
+```{r rf2, fig.width=7, echo = FALSE, fig.height=4}
 plot(gg_error(rfm)) + theme_bw() + scale_y_continuous(limits=c(0,.05)) + ggtitle("OOB Error Rate (Random Forest)") + geom_line(size=.75)
 vimp <- varImp(rfm); vimp <- cbind(measure = rownames(vimp), vimp)
 vimp <- arrange(vimp, desc(Overall))
@@ -111,7 +113,7 @@ ggplot(vimp[1:12,], aes(measure, Overall)) + theme_bw() +
 ```
 
 7. Third Model: Boosting (GBM)
-```{r gbm, cache = TRUE, warning=FALSE, message=FALSE, results = "hide"}
+```{r gbm, results = "hide"}
 gbm1      <- gbm.fit(x = training[,-length(training)], y = training[,length(training)],
                         distribution = "multinomial", verbose = FALSE, 
                         interaction.depth=5, shrinkage=0.005, n.trees = 1000)
@@ -123,7 +125,7 @@ cm3       <- confusionMatrix(testing$classe, testgbm)
 ```
 
 
-```{r gbm22, echo = FALSE, fig.width=7, fig.height=4, fig.align = 'center', cache = TRUE, warning=FALSE, message=FALSE,}
+```{r gbm22, echo = FALSE, fig.width=7, fig.height=4}
 vimp2 <- head(summary(gbm1, plotit = FALSE), 12)
 vimp2$var <- factor(vimp2$var, levels = vimp2$var)
 ggplot(vimp2, aes(var, rel.inf)) + theme_bw() +
@@ -138,7 +140,7 @@ ggplot(vimp2, aes(var, rel.inf)) + theme_bw() +
 The following are some extractions from the Confusion Matrix for each specification. These calculations were done on the cross-validation dataset and should be an unbiased estimate of out of sample performance.  
 
 10. Performance Comparison
-```{r Performance, cache = TRUE}
+```{r Performance}
 Accuracy <- as.numeric(c(cm1$overall[1], cm2$overall[1], cm3$overall[1]))
 Kappa    <- as.numeric(c(cm1$overall[2], cm2$overall[2], cm3$overall[2]))
 OOBError <- 1 - Accuracy
@@ -148,7 +150,7 @@ colnames(Results) <- c("CART", "Random Forest", "Boosted (GBM)")
 
 The calculated Accuracy rates, Kappas, and Out of Sample Error rates estimates for each specification are:  
 
-```{r Performance2, cache = T, echo = FALSE}
+```{r Performance2, echo = FALSE}
 kable(list(Results), caption = "**Model Performance**", digits = 4)
 ```
 
@@ -158,7 +160,7 @@ The following reports the Confusion Matrices for the 2 best performing algorithm
 
 
 
-```{r CMs, echo = FALSE, cache = TRUE}
+```{r CMs, echo = FALSE}
 pander(cm3$table, caption = "**Confusion Matrix (GMB Model)**")
 pander(cm2$table, caption = "**Confusion Matrix (Random Forest Model)**")
 kable(list(t(cm2$byClass[,-c(5:7)])), caption = "**Statistics By Class (Random Forest Model)**", digits = 4)
@@ -170,7 +172,7 @@ kable(list(t(cm2$byClass[,-c(5:7)])), caption = "**Statistics By Class (Random F
 Now I will use the 2 best performing algorithms to predict how well individuals preform the dumbbell exercises using the test dataset for submission. 
 
 11. Transforming the test dataset in the same way as training. Then using the Random Forest model for prediction
-```{r testRF, cache = TRUE}
+```{r testRF}
 test   <- test[,-nrzv]
 test   <- test[, -c(1:6)]
 test   <- test[, -xNAs]
@@ -179,7 +181,7 @@ testRF <- predict(rfm, newdata = test)
 ```
 
 12. Using the GBM model for prediction. Compare predictions
-```{r testGBM, cache = TRUE}
+```{r testGBM}
 probs2   <- predict(gbm1, test, n.trees = best.iter, type = "response")
 indexes2 <- apply(probs2, 1, which.max)
 testGBM  <- as.factor(colnames(probs2)[indexes2])
@@ -190,7 +192,7 @@ identical(answers$testRF, answers$testGBM)
 The RF and the GBM predictions are identical. The answers to be submitted are:   
 
 
-```{r pred, echo = FALSE, cache = TRUE}
+```{r pred, echo = FALSE}
 colnames(answers) <- c("Random Forest:", "Boosted (GBM)")
 kable(list(t(answers)), caption = "**Predictions on test Dataset**")
 ```

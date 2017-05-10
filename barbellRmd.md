@@ -4,6 +4,7 @@ Reynaldo
 
 
 
+
 ## Summary  
 This analysis uses different machine learning algorithms on accelerometer data to predict how well individuals perform weight-lifting exercises. The dataset comes from Veloso et al., (2013) and it contains data from accelerometers on the belt, forearm, arm, and dumbbell from 6 individuals.
 
@@ -134,87 +135,55 @@ colnames(Results) <- c("CART", "Random Forest", "Boosted (GBM)")
 The calculated Accuracy rates, Kappas, and Out of Sample Error rates estimates for each specification are:  
 
 
-<table class="kable_wrapper">
-<caption>**Model Performance**</caption>
-<tbody>
-  <tr>
-   <td> 
-
-              CART   Random Forest   Boosted (GBM)
----------  -------  --------------  --------------
-Accuracy    0.7243          0.9934          0.9434
-Kappa       0.6496          0.9916          0.9284
-OOBError    0.2757          0.0066          0.0566
-
- </td>
-  </tr>
-</tbody>
-</table>
+```
+##               CART Random Forest Boosted (GBM)
+## Accuracy 0.7243181   0.993372419    0.94341066
+## Kappa    0.6496212   0.991615676    0.92838601
+## OOBError 0.2756819   0.006627581    0.05658934
+```
 
 Performance metrics indicate that the Random Forest is the best performing algorithm for this purpose with an accuracy rate of $0.9933724$. It is followed by the GBM algorithm with an accuracy rate of $0.9434107$. And last, is the CART algorithm which performed poorly compared to the other 2 with an accuracy rate of $0.7243181$.   
 
 The following reports the Confusion Matrices for the 2 best performing algorithms, and Class Specific statistics for the Random Forest specification.   
 
 
+**Confusion Matrix (GMB Model)**  
 
+```
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 2175   30   10   13    4
+##          B   75 1384   55    3    1
+##          C    0   60 1279   24    5
+##          D    3   12   57 1208    6
+##          E   12   29   27   18 1356
+```
+ 
+**Confusion Matrix (Random Forest Model)**  
 
---------------------------------
-&nbsp;   A    B    C    D    E  
-------- ---- ---- ---- ---- ----
- **A**  2175  30   10   13   4  
+```
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 2231    1    0    0    0
+##          B    8 1504    6    0    0
+##          C    0   20 1346    2    0
+##          D    0    0   12 1274    0
+##          E    0    0    3    0 1439
+```
 
- **B**   75  1384  55   3    1  
+**Statistics By Class (Random Forest Model)**
 
- **C**   0    60  1279  24   5  
-
- **D**   3    12   57  1208  6  
-
- **E**   12   29   27   18  1356
---------------------------------
-
-Table: **Confusion Matrix (GMB Model)**
-
-
---------------------------------
-&nbsp;   A    B    C    D    E  
-------- ---- ---- ---- ---- ----
- **A**  2231  1    0    0    0  
-
- **B**   8   1504  6    0    0  
-
- **C**   0    20  1346  2    0  
-
- **D**   0    0    12  1274  0  
-
- **E**   0    0    3    0   1439
---------------------------------
-
-Table: **Confusion Matrix (Random Forest Model)**
-
-
-
-<table class="kable_wrapper">
-<caption>**Statistics By Class (Random Forest Model)**</caption>
-<tbody>
-  <tr>
-   <td> 
-
-                        Class: A   Class: B   Class: C   Class: D   Class: E
----------------------  ---------  ---------  ---------  ---------  ---------
-Sensitivity               0.9964     0.9862     0.9846     0.9984     1.0000
-Specificity               0.9998     0.9978     0.9966     0.9982     0.9995
-Pos Pred Value            0.9996     0.9908     0.9839     0.9907     0.9979
-Neg Pred Value            0.9986     0.9967     0.9968     0.9997     1.0000
-Prevalence                0.2854     0.1944     0.1742     0.1626     0.1834
-Detection Rate            0.2843     0.1917     0.1716     0.1624     0.1834
-Detection Prevalence      0.2845     0.1935     0.1744     0.1639     0.1838
-Balanced Accuracy         0.9981     0.9920     0.9906     0.9983     0.9998
-
- </td>
-  </tr>
-</tbody>
-</table>
-  
+```
+##                       Class: A  Class: B  Class: C  Class: D  Class: E
+## Sensitivity          0.9964270 0.9862295 0.9846379 0.9984326 1.0000000
+## Specificity          0.9998217 0.9977852 0.9966044 0.9981735 0.9995318
+## Pos Pred Value       0.9995520 0.9907773 0.9839181 0.9906687 0.9979196
+## Neg Pred Value       0.9985750 0.9966814 0.9967583 0.9996951 1.0000000
+## Prevalence           0.2853683 0.1943666 0.1742289 0.1626306 0.1834056
+## Detection Rate       0.2843487 0.1916900 0.1715524 0.1623757 0.1834056
+## Detection Prevalence 0.2844762 0.1934744 0.1743564 0.1639052 0.1837879
+## Balanced Accuracy    0.9981243 0.9920073 0.9906212 0.9983031 0.9997659
+```
   
 ## Predicting on the test Dataset  
 
@@ -247,22 +216,14 @@ identical(answers$testRF, answers$testGBM)
 The RF and the GBM predictions are identical. The answers to be submitted are:   
 
 
-
-<table class="kable_wrapper">
-<caption>**Predictions on test Dataset**</caption>
-<tbody>
-  <tr>
-   <td> 
-
-                 1    2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18   19   20 
----------------  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
-Random Forest:   B    A    B    A    A    E    D    B    A    A    B    C    B    A    E    E    A    B    B    B  
-Boosted (GBM)    B    A    B    A    A    E    D    B    A    A    B    C    B    A    E    E    A    B    B    B  
-
- </td>
-  </tr>
-</tbody>
-</table>
+```
+##                1   2   3   4   5   6   7   8   9   10  11  12  13  14  15 
+## Random Forest: "B" "A" "B" "A" "A" "E" "D" "B" "A" "A" "B" "C" "B" "A" "E"
+## Boosted (GBM)  "B" "A" "B" "A" "A" "E" "D" "B" "A" "A" "B" "C" "B" "A" "E"
+##                16  17  18  19  20 
+## Random Forest: "E" "A" "B" "B" "B"
+## Boosted (GBM)  "E" "A" "B" "B" "B"
+```
 
 ## Conclusion:   
 This analysis used accelerometer data to predict how well individuals perform dumbbell-lifting exercises. Three machine-learning algorithms were tested: CART, Random Forest, and Boosted GBM. The best performing algorithm was the Random Forest with $99.4\%$ accuracy, followed by the Boosted GBM with $94.3\%$ accuracy, and worst performing was the CART algorithm, which performed poorly compared to the other 2 with a $72.4\%$ accuracy. 
