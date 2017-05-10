@@ -167,12 +167,7 @@ inTrain  = createDataPartition(train$classe, p = 3/5)[[1]]
 training = train[ inTrain,]
 testing  = train[-inTrain,]</code></pre>
 <p><strong>Pre-processing</strong><br />
-The training dataset now contains <span class="math inline">\(11776\)</span> observations of <span class="math inline">\(53\)</span> variables, all cells with valid entries. Although correlation analysis, as seen in the figure below, shows a high correlation between a significant number of predictors, no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition was able to capture <span class="math inline">\(95\%\)</span> of the variance by reducing the number of components by over <span class="math inline">\(50\%\)</span> but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.</p>
-<pre class="r"><code>par(xpd=TRUE)
-corrplot.mixed(cor(training[,-length(training)]), lower=&quot;color&quot;, upper=&quot;circle&quot;, mar=c(1,1,1,1),
-               tl.pos=&quot;lt&quot;, diag=&quot;n&quot;, title = &quot;Correlation Matrix Visualization&quot;,
-               order=&quot;hclust&quot;, hclust.method=&quot;complete&quot;, tl.cex = .65, tl.col =&quot;#656565&quot;)</code></pre>
-<p><img src="barbellRmd_files/figure-html/plotcorr-1.png" style="display: block; margin: auto;" /></p>
+The training dataset now contains <span class="math inline">\(11776\)</span> observations of <span class="math inline">\(53\)</span> variables, all cells with valid entries. Although correlation analysis, as seen in the correlation matrix figure in the appendix, shows a high correlation between a number of predictors, no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition (discarded) was able to capture <span class="math inline">\(95\%\)</span> of the variance by reducing the number of components by over <span class="math inline">\(50\%\)</span> but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.</p>
 </div>
 <div id="machine-learning-specifications" class="section level2">
 <h2>Machine Learning Specifications</h2>
@@ -180,44 +175,44 @@ corrplot.mixed(cor(training[,-length(training)]), lower=&quot;color&quot;, upper
 <ol start="5" style="list-style-type: decimal">
 <li>First Model: Classification and Regression Tree (CART)</li>
 </ol>
-<pre class="r"><code>rpart1    &lt;- rpart(classe ~ ., method=&quot;class&quot;, data=training)
+<pre class="r"><code>tm.1      &lt;- system.time(
+rpart1    &lt;- rpart(classe ~ ., method=&quot;class&quot;, data=training))
 testrpart &lt;- predict(rpart1, newdata = testing[,-length(testing)], type = &quot;class&quot;)
-cm1       &lt;- confusionMatrix(testing$classe, testrpart)</code></pre>
-<pre class="r"><code>rpart.plot(rpart1, main=&quot;Decision Tree (rpart)&quot;, type = 1, extra=0, cex = NULL, 
-           tweak = 1, fallen.leaves = FALSE, shadow.col = &quot;#e0e0e0&quot;, box.palette = mycolors)</code></pre>
-<p><img src="barbellRmd_files/figure-html/plot1-1.png" style="display: block; margin: auto;" /></p>
+cm1       &lt;- confusionMatrix(testrpart, testing$classe)</code></pre>
 <ol start="6" style="list-style-type: decimal">
 <li>Second Model: Random Forest (RF)</li>
 </ol>
-<pre class="r"><code>rfm     &lt;- randomForest(training[,-length(training)], training[,length(training)], ntree = 500)
+<pre class="r"><code>tm.2    &lt;- system.time(
+rfm     &lt;- randomForest(training[,-length(training)], training[,length(training)], ntree = 500)    )
 testrfm &lt;- predict(rfm, newdata = testing[,-length(testing)])
-cm2     &lt;- confusionMatrix(testing$classe, testrfm)</code></pre>
-<p><img src="barbellRmd_files/figure-html/rf2-1.png" style="display: block; margin: auto;" /><img src="barbellRmd_files/figure-html/rf2-2.png" style="display: block; margin: auto;" /></p>
+cm2     &lt;- confusionMatrix(testrfm, testing$classe)</code></pre>
 <ol start="7" style="list-style-type: decimal">
 <li>Third Model: Boosting (GBM)</li>
 </ol>
-<pre class="r"><code>gbm1      &lt;- gbm.fit(x = training[,-length(training)], y = training[,length(training)],
+<pre class="r"><code>tm.3      &lt;- system.time(
+gbm1      &lt;- gbm.fit(x = training[,-length(training)], y = training[,length(training)],
                         distribution = &quot;multinomial&quot;, verbose = FALSE, 
-                        interaction.depth=5, shrinkage=0.005, n.trees = 1000)
+                        interaction.depth=5, shrinkage=0.005, n.trees = 1000))
 best.iter &lt;- gbm.perf(gbm1,method=&quot;OOB&quot;, plot.it = FALSE)
 probs     &lt;- predict(gbm1, testing[,-length(testing)], n.trees = best.iter, type = &quot;response&quot;)
 indexes   &lt;- apply(probs, 1, which.max)
 testgbm   &lt;- colnames(probs)[indexes]
-cm3       &lt;- confusionMatrix(testing$classe, testgbm)</code></pre>
-<p><img src="barbellRmd_files/figure-html/gbm22-1.png" style="display: block; margin: auto;" /></p>
+cm3       &lt;- confusionMatrix(testgbm, testing$classe)</code></pre>
 </div>
 <div id="algorithm-performance-comparison" class="section level2">
 <h2>Algorithm Performance Comparison</h2>
 <p>The following are some extractions from the Confusion Matrix for each specification. These calculations were done on the cross-validation dataset and should be an unbiased estimate of out of sample performance.</p>
-<ol start="10" style="list-style-type: decimal">
+<ol start="8" style="list-style-type: decimal">
 <li>Performance Comparison</li>
 </ol>
-<pre class="r"><code>Accuracy &lt;- as.numeric(c(cm1$overall[1], cm2$overall[1], cm3$overall[1]))
-Kappa    &lt;- as.numeric(c(cm1$overall[2], cm2$overall[2], cm3$overall[2]))
-OOBError &lt;- 1 - Accuracy
-Results &lt;- rbind(Accuracy, Kappa, OOBError)
+<pre class="r"><code>Accuracy     &lt;- as.numeric(c(cm1$overall[1], cm2$overall[1], cm3$overall[1]))
+Kappa        &lt;- as.numeric(c(cm1$overall[2], cm2$overall[2], cm3$overall[2]))
+OOBError     &lt;- 1 - Accuracy
+Time.Elapsed &lt;- as.numeric(c(tm.1[3], tm.2[3], tm.3[3]))
+Results      &lt;- rbind(Accuracy, Kappa, OOBError, Time.Elapsed)
 colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boosted (GBM)&quot;)</code></pre>
-<p>The calculated Accuracy rates, Kappas, and Out of Sample Error rates estimates for each specification are:</p>
+<div id="the-calculated-accuracy-rates-kappas-and-out-of-sample-error-rates-estimates-for-each-specification-are" class="section level4">
+<h4>The calculated Accuracy rates, Kappas, and Out of Sample Error rates estimates for each specification are:</h4>
 <table class="kable_wrapper">
 <caption>
 <strong>Model Performance</strong>
@@ -253,14 +248,20 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 <td align="right">0.0066</td>
 <td align="right">0.0566</td>
 </tr>
+<tr class="even">
+<td>Time.Elapsed</td>
+<td align="right">1.9410</td>
+<td align="right">30.1730</td>
+<td align="right">210.1060</td>
+</tr>
 </tbody>
 </table>
 </td>
 </tr>
 </tbody>
 </table>
-<p>Performance metrics indicate that the Random Forest is the best performing algorithm for this purpose with an accuracy rate of <span class="math inline">\(0.9933724\)</span>. It is followed by the GBM algorithm with an accuracy rate of <span class="math inline">\(0.9434107\)</span>. And last, is the CART algorithm which performed poorly compared to the other 2 with an accuracy rate of <span class="math inline">\(0.7243181\)</span>.</p>
-<p>The following reports the Confusion Matrices for the 2 best performing algorithms, and Class Specific statistics for the Random Forest specification.</p>
+<p>Performance metrics indicate that the Random Forest is the best performing algorithm for this purpose with an accuracy rate of <span class="math inline">\(0.9933724\)</span>. It is followed by the GBM algorithm with an accuracy rate of <span class="math inline">\(0.9434107\)</span>. And last, is the CART algorithm which performed poorly compared to the other 2 with an accuracy rate of <span class="math inline">\(0.7243181\)</span>. In terms of time efficiency, the Random Forest specification is about 7 times faster than GBM.</p>
+<p>The following reports the Confusion Matrices for the 2 best performing algorithms in terms of accuracy. Class Specific statistics are for the Random Forest model only.</p>
 <table style="width:46%;">
 <caption><strong>Confusion Matrix (GMB Model)</strong></caption>
 <colgroup>
@@ -285,41 +286,41 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 <tr class="odd">
 <td align="left"><strong>A</strong></td>
 <td align="center">2175</td>
-<td align="center">30</td>
-<td align="center">10</td>
-<td align="center">13</td>
-<td align="center">4</td>
+<td align="center">75</td>
+<td align="center">0</td>
+<td align="center">3</td>
+<td align="center">12</td>
 </tr>
 <tr class="even">
 <td align="left"><strong>B</strong></td>
-<td align="center">75</td>
+<td align="center">30</td>
 <td align="center">1384</td>
-<td align="center">55</td>
-<td align="center">3</td>
-<td align="center">1</td>
+<td align="center">60</td>
+<td align="center">12</td>
+<td align="center">29</td>
 </tr>
 <tr class="odd">
 <td align="left"><strong>C</strong></td>
-<td align="center">0</td>
-<td align="center">60</td>
+<td align="center">10</td>
+<td align="center">55</td>
 <td align="center">1279</td>
-<td align="center">24</td>
-<td align="center">5</td>
+<td align="center">57</td>
+<td align="center">27</td>
 </tr>
 <tr class="even">
 <td align="left"><strong>D</strong></td>
+<td align="center">13</td>
 <td align="center">3</td>
-<td align="center">12</td>
-<td align="center">57</td>
+<td align="center">24</td>
 <td align="center">1208</td>
-<td align="center">6</td>
+<td align="center">18</td>
 </tr>
 <tr class="odd">
 <td align="left"><strong>E</strong></td>
-<td align="center">12</td>
-<td align="center">29</td>
-<td align="center">27</td>
-<td align="center">18</td>
+<td align="center">4</td>
+<td align="center">1</td>
+<td align="center">5</td>
+<td align="center">6</td>
 <td align="center">1356</td>
 </tr>
 </tbody>
@@ -348,32 +349,32 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 <tr class="odd">
 <td align="left"><strong>A</strong></td>
 <td align="center">2231</td>
-<td align="center">1</td>
+<td align="center">8</td>
 <td align="center">0</td>
 <td align="center">0</td>
 <td align="center">0</td>
 </tr>
 <tr class="even">
 <td align="left"><strong>B</strong></td>
-<td align="center">8</td>
+<td align="center">1</td>
 <td align="center">1504</td>
-<td align="center">6</td>
+<td align="center">20</td>
 <td align="center">0</td>
 <td align="center">0</td>
 </tr>
 <tr class="odd">
 <td align="left"><strong>C</strong></td>
 <td align="center">0</td>
-<td align="center">20</td>
+<td align="center">6</td>
 <td align="center">1346</td>
-<td align="center">2</td>
-<td align="center">0</td>
+<td align="center">12</td>
+<td align="center">3</td>
 </tr>
 <tr class="even">
 <td align="left"><strong>D</strong></td>
 <td align="center">0</td>
 <td align="center">0</td>
-<td align="center">12</td>
+<td align="center">2</td>
 <td align="center">1274</td>
 <td align="center">0</td>
 </tr>
@@ -381,7 +382,7 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 <td align="left"><strong>E</strong></td>
 <td align="center">0</td>
 <td align="center">0</td>
-<td align="center">3</td>
+<td align="center">0</td>
 <td align="center">0</td>
 <td align="center">1439</td>
 </tr>
@@ -408,22 +409,6 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 <tbody>
 <tr class="odd">
 <td>Sensitivity</td>
-<td align="right">0.9964</td>
-<td align="right">0.9862</td>
-<td align="right">0.9846</td>
-<td align="right">0.9984</td>
-<td align="right">1.0000</td>
-</tr>
-<tr class="even">
-<td>Specificity</td>
-<td align="right">0.9998</td>
-<td align="right">0.9978</td>
-<td align="right">0.9966</td>
-<td align="right">0.9982</td>
-<td align="right">0.9995</td>
-</tr>
-<tr class="odd">
-<td>Pos Pred Value</td>
 <td align="right">0.9996</td>
 <td align="right">0.9908</td>
 <td align="right">0.9839</td>
@@ -431,7 +416,7 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 <td align="right">0.9979</td>
 </tr>
 <tr class="even">
-<td>Neg Pred Value</td>
+<td>Specificity</td>
 <td align="right">0.9986</td>
 <td align="right">0.9967</td>
 <td align="right">0.9968</td>
@@ -439,12 +424,28 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 <td align="right">1.0000</td>
 </tr>
 <tr class="odd">
+<td>Pos Pred Value</td>
+<td align="right">0.9964</td>
+<td align="right">0.9862</td>
+<td align="right">0.9846</td>
+<td align="right">0.9984</td>
+<td align="right">1.0000</td>
+</tr>
+<tr class="even">
+<td>Neg Pred Value</td>
+<td align="right">0.9998</td>
+<td align="right">0.9978</td>
+<td align="right">0.9966</td>
+<td align="right">0.9982</td>
+<td align="right">0.9995</td>
+</tr>
+<tr class="odd">
 <td>Prevalence</td>
-<td align="right">0.2854</td>
-<td align="right">0.1944</td>
-<td align="right">0.1742</td>
-<td align="right">0.1626</td>
-<td align="right">0.1834</td>
+<td align="right">0.2845</td>
+<td align="right">0.1935</td>
+<td align="right">0.1744</td>
+<td align="right">0.1639</td>
+<td align="right">0.1838</td>
 </tr>
 <tr class="even">
 <td>Detection Rate</td>
@@ -456,19 +457,19 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 </tr>
 <tr class="odd">
 <td>Detection Prevalence</td>
-<td align="right">0.2845</td>
-<td align="right">0.1935</td>
-<td align="right">0.1744</td>
-<td align="right">0.1639</td>
-<td align="right">0.1838</td>
+<td align="right">0.2854</td>
+<td align="right">0.1944</td>
+<td align="right">0.1742</td>
+<td align="right">0.1626</td>
+<td align="right">0.1834</td>
 </tr>
 <tr class="even">
 <td>Balanced Accuracy</td>
-<td align="right">0.9981</td>
-<td align="right">0.9920</td>
-<td align="right">0.9906</td>
-<td align="right">0.9983</td>
-<td align="right">0.9998</td>
+<td align="right">0.9991</td>
+<td align="right">0.9937</td>
+<td align="right">0.9903</td>
+<td align="right">0.9952</td>
+<td align="right">0.9990</td>
 </tr>
 </tbody>
 </table>
@@ -477,10 +478,11 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 </tbody>
 </table>
 </div>
+</div>
 <div id="predicting-on-the-test-dataset" class="section level2">
 <h2>Predicting on the test Dataset</h2>
 <p>Now I will use the 2 best performing algorithms to predict how well individuals preform the dumbbell exercises using the test dataset for submission.</p>
-<ol start="11" style="list-style-type: decimal">
+<ol start="9" style="list-style-type: decimal">
 <li>Transforming the test dataset in the same way as training. Then using the Random Forest model for prediction</li>
 </ol>
 <pre class="r"><code>test   &lt;- test[,-nrzv]
@@ -488,7 +490,7 @@ test   &lt;- test[, -c(1:6)]
 test   &lt;- test[, -xNAs]
 test   &lt;- test[,-length(test)]
 testRF &lt;- predict(rfm, newdata = test)</code></pre>
-<ol start="12" style="list-style-type: decimal">
+<ol start="10" style="list-style-type: decimal">
 <li>Using the GBM model for prediction. Compare predictions</li>
 </ol>
 <pre class="r"><code>probs2   &lt;- predict(gbm1, test, n.trees = best.iter, type = &quot;response&quot;)
@@ -588,6 +590,41 @@ identical(answers$testRF, answers$testGBM)</code></pre>
 <div id="conclusion" class="section level2">
 <h2>Conclusion:</h2>
 <p>This analysis used accelerometer data to predict how well individuals perform dumbbell-lifting exercises. Three machine-learning algorithms were tested: CART, Random Forest, and Boosted GBM. The best performing algorithm was the Random Forest with <span class="math inline">\(99.4\%\)</span> accuracy, followed by the Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, and worst performing was the CART algorithm, which performed poorly compared to the other 2 with a <span class="math inline">\(72.4\%\)</span> accuracy.</p>
+</div>
+<div id="appendix" class="section level2">
+<h2>Appendix</h2>
+<p>Fig 1. Correlation Matrix Visualization</p>
+<pre class="r"><code>par(xpd=TRUE)
+corrplot.mixed(cor(training[,-length(training)]), lower=&quot;color&quot;, upper=&quot;circle&quot;, mar=c(1,1,1,1),
+               tl.pos=&quot;lt&quot;, diag=&quot;n&quot;, title = &quot;Correlation Matrix Visualization&quot;,
+               order=&quot;hclust&quot;, hclust.method=&quot;complete&quot;, tl.cex = .65, tl.col =&quot;#656565&quot;)</code></pre>
+<p><img src="barbellRmd_files/figure-html/plotcorr-1.png" width="720" style="display: block; margin: auto;" /></p>
+<p>Fig 2. RPart Decision Tree</p>
+<pre class="r"><code>rpart.plot(rpart1, main=&quot;Decision Tree (rpart)&quot;, type = 1, extra=0, cex = NULL, 
+           tweak = 1, fallen.leaves = FALSE, shadow.col = &quot;#e0e0e0&quot;, box.palette = mycolors)</code></pre>
+<p><img src="barbellRmd_files/figure-html/plot1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Fig 3. Random Forest OOB Error Rate</p>
+<pre class="r"><code>plot(gg_error(rfm)) + theme_bw() + scale_y_continuous(limits=c(0,.05)) + ggtitle(&quot;OOB Error Rate (Random Forest)&quot;) + geom_line(size=.75)</code></pre>
+<p><img src="barbellRmd_files/figure-html/rf1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Fig 4. Variables of Importance (Random Forest)</p>
+<pre class="r"><code>vimp &lt;- varImp(rfm); vimp &lt;- cbind(measure = rownames(vimp), vimp)
+vimp &lt;- arrange(vimp, desc(Overall))
+vimp$measure &lt;- factor(vimp$measure, levels = vimp$measure)
+ggplot(vimp[1:12,], aes(measure, Overall)) + theme_bw() +
+        geom_bar(stat = &quot;identity&quot;, fill = &quot;#ff4d94&quot;, alpha = 0.8) +
+        theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
+        xlab(&quot;Measure&quot;) + 
+        ggtitle(&quot;Top 12 Variables of Importance (Random Forest)&quot;)</code></pre>
+<p><img src="barbellRmd_files/figure-html/rf2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Fig 5. Variables of Importance (GBM)</p>
+<pre class="r"><code>vimp2 &lt;- head(summary(gbm1, plotit = FALSE), 12)
+vimp2$var &lt;- factor(vimp2$var, levels = vimp2$var)
+ggplot(vimp2, aes(var, rel.inf)) + theme_bw() +
+        geom_bar(stat = &quot;identity&quot;, fill = &quot;#b366ff&quot;, alpha = 0.8) +
+        theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
+        xlab(&quot;Measure&quot;) + 
+        ggtitle(&quot;Top 12 Variables of Importance (GBM)&quot;)</code></pre>
+<p><img src="barbellRmd_files/figure-html/gbm22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p><strong>Reference:</strong><br />
 Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. (2013) Qualitative Activity Recognition of Weight Lifting Exercises. <em>Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13)</em> . Stuttgart, Germany: ACM SIGCHI</p>
 </div>
