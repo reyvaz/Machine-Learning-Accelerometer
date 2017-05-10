@@ -116,7 +116,7 @@ colnames(Results) <- c("CART", "Random Forest", "Boosted (GBM)")
 kable(list(Results), caption = "**Model Performance**", digits = 4)
 ```
 
-Performance metrics indicate that the Random Forest is the best performing algorithm for this purpose with an accuracy rate of $`r cm2$overall[1]`$. It is followed by the GBM algorithm with an accuracy rate of $`r cm3$overall[1]`$. And last, is the CART algorithm which performed poorly compared to the other 2 with an accuracy rate of $`r cm1$overall[1]`$. In terms of time efficiency, the Random Forest specification is about 7 times faster than GBM.   
+Performance metrics indicate that the Random Forest is the best performing algorithm tested here for this purpose with an accuracy rate of $`r cm2$overall[1]`$. It is followed by the GBM algorithm with an accuracy rate of $`r cm3$overall[1]`$. And last, is the CART algorithm which performed poorly compared to the other 2 with an accuracy rate of $`r cm1$overall[1]`$. In terms of time efficiency, the Random Forest specification is about 7 times faster than GBM.   
 
 The following reports the Confusion Matrices for the 2 best performing algorithms in terms of accuracy. Class Specific statistics are for the Random Forest model only.   
 
@@ -132,7 +132,7 @@ kable(list(t(cm2$byClass[,-c(5:7)])), caption = "**Statistics By Class (Random F
   
 ## Predicting on the test Dataset  
 
-Now I will use the 2 best performing algorithms to predict how well individuals preform the dumbbell exercises using the test dataset for submission. 
+Now I will use the 2 best performing algorithms to predict how well individuals perform the dumbbell exercises using the test dataset for submission. 
 
 9. Transforming the test dataset in the same way as training. Then using the Random Forest model for prediction
 ```{r testRF}
