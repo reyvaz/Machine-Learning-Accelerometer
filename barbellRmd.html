@@ -226,7 +226,7 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;GBM
 <th></th>
 <th align="right">CART</th>
 <th align="right">Random Forest</th>
-<th align="right">Boosted (GBM)</th>
+<th align="right">GBM</th>
 </tr>
 </thead>
 <tbody>
@@ -250,9 +250,9 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;GBM
 </tr>
 <tr class="even">
 <td>Time.Elapsed</td>
-<td align="right">1.9410</td>
-<td align="right">30.1730</td>
-<td align="right">210.1060</td>
+<td align="right">2.1910</td>
+<td align="right">29.2390</td>
+<td align="right">211.0840</td>
 </tr>
 </tbody>
 </table>
@@ -500,6 +500,8 @@ answers  &lt;- cbind.data.frame(testRF, testGBM)
 identical(answers$testRF, answers$testGBM)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <p>The RF and the GBM predictions are identical. The answers to be submitted are:</p>
+<pre class="r"><code>colnames(answers) &lt;- c(&quot;Random Forest:&quot;, &quot;Boosted (GBM)&quot;)
+kable(list(t(answers)), caption = &quot;**Predictions on test Dataset**&quot;)</code></pre>
 <table class="kable_wrapper">
 <caption>
 <strong>Predictions on test Dataset</strong>

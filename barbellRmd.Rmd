@@ -112,7 +112,7 @@ colnames(Results) <- c("CART", "Random Forest", "GBM")
 
 #### The calculated Accuracy rates, Kappas, and Out of Sample Error rates estimates for each specification are:  
 
-```{r Performance2, echo = FALSE}
+```{r Performance2, cache = FALSE, echo = FALSE}
 kable(list(Results), caption = "**Model Performance**", digits = 4)
 ```
 
@@ -154,7 +154,7 @@ identical(answers$testRF, answers$testGBM)
 
 The RF and the GBM predictions are identical. The answers to be submitted are:   
 
-```{r pred, echo = FALSE}
+```{r pred}
 colnames(answers) <- c("Random Forest:", "Boosted (GBM)")
 kable(list(t(answers)), caption = "**Predictions on test Dataset**")
 ```
