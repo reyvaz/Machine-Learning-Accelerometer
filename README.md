@@ -9,4 +9,6 @@ The code processes data and constructs 3 different machine learning algorithms, 
 
 The training dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv). And the test dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv).    
 
-The full code for the analysis is found on the file `<barbellRmd.Rmd>` and the rendered html version is `<barbellRmd.html>`   
+*The rendered html version of the code is found at [barbellRmd.html](https://reyvaz.github.io/MachineLearningWL/barbellRmd.html). 
+
+*The full code is at the [barbellRmd.Rmd](https://reyvaz.github.io/MachineLearningWL/barbellRmd.Rmd) file.
