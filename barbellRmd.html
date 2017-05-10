@@ -127,7 +127,7 @@ $(document).ready(function () {
 <h2>Summary</h2>
 <p>This analysis uses different machine learning algorithms on accelerometer data to predict how well individuals perform weight-lifting exercises. The dataset comes from Veloso et al., (2013) and it contains data from accelerometers on the belt, forearm, arm, and dumbbell from 6 individuals.</p>
 <p>The participants were asked to perform one set of 10 repetitions of the unilateral dumbbell biceps curl in five different ways: according to specification (class A), throwing the elbows to the front (B), lifting the dumbbell only halfway (C), lowering the dumbbell only halfway (D), and throwing the hips to the front (E).</p>
-<p>The following tests different machine learning algorithms, including CART, Random Forest, and Boosted GBM to predict how well the dumbbell biceps curl were performed (variable classe in the dataset). The best performing algorithm is a Random Forest specification with <span class="math inline">\(99.3\%\)</span> accuracy, followed by a Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, both in the cross-validation dataset.</p>
+<p>The following tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict how well the dumbbell biceps curl were performed (variable classe in the dataset). The best performing algorithm is a Random Forest specification with <span class="math inline">\(99.3\%\)</span> accuracy, followed by a Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, both in the cross-validation dataset.</p>
 <ol style="list-style-type: decimal">
 <li>Necessary packages</li>
 </ol>
@@ -171,7 +171,7 @@ The training dataset now contains <span class="math inline">\(11776\)</span> obs
 </div>
 <div id="machine-learning-specifications" class="section level2">
 <h2>Machine Learning Specifications</h2>
-<p>The following will test and compare the performance of 3 different machine learning algorithms: CART, Random Forest, and Boosted GBM.</p>
+<p>The following will test and compare the performance of 3 different machine learning algorithms: CART, Random Forest, and GBM.</p>
 <ol start="5" style="list-style-type: decimal">
 <li>First Model: Classification and Regression Tree (CART)</li>
 </ol>
@@ -210,7 +210,7 @@ Kappa        &lt;- as.numeric(c(cm1$overall[2], cm2$overall[2], cm3$overall[2]))
 OOBError     &lt;- 1 - Accuracy
 Time.Elapsed &lt;- as.numeric(c(tm.1[3], tm.2[3], tm.3[3]))
 Results      &lt;- rbind(Accuracy, Kappa, OOBError, Time.Elapsed)
-colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boosted (GBM)&quot;)</code></pre>
+colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;GBM&quot;)</code></pre>
 <div id="the-calculated-accuracy-rates-kappas-and-out-of-sample-error-rates-estimates-for-each-specification-are" class="section level4">
 <h4>The calculated Accuracy rates, Kappas, and Out of Sample Error rates estimates for each specification are:</h4>
 <table class="kable_wrapper">
@@ -260,10 +260,10 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 </tr>
 </tbody>
 </table>
-<p>Performance metrics indicate that the Random Forest is the best performing algorithm for this purpose with an accuracy rate of <span class="math inline">\(0.9933724\)</span>. It is followed by the GBM algorithm with an accuracy rate of <span class="math inline">\(0.9434107\)</span>. And last, is the CART algorithm which performed poorly compared to the other 2 with an accuracy rate of <span class="math inline">\(0.7243181\)</span>. In terms of time efficiency, the Random Forest specification is about 7 times faster than GBM.</p>
+<p>Performance metrics indicate that the Random Forest is the best performing algorithm tested here for this purpose with an accuracy rate of <span class="math inline">\(0.9933724\)</span>. It is followed by the GBM algorithm with an accuracy rate of <span class="math inline">\(0.9434107\)</span>. And last, is the CART algorithm which performed poorly compared to the other 2 with an accuracy rate of <span class="math inline">\(0.7243181\)</span>. In terms of time efficiency, the Random Forest specification is about 7 times faster than GBM.</p>
 <p>The following reports the Confusion Matrices for the 2 best performing algorithms in terms of accuracy. Class Specific statistics are for the Random Forest model only.</p>
 <table style="width:46%;">
-<caption><strong>Confusion Matrix (GMB Model)</strong></caption>
+<caption><strong>Confusion Matrix (GMB)</strong></caption>
 <colgroup>
 <col width="11%" />
 <col width="6%" />
@@ -326,7 +326,7 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 </tbody>
 </table>
 <table style="width:46%;">
-<caption><strong>Confusion Matrix (Random Forest Model)</strong></caption>
+<caption><strong>Confusion Matrix (Random Forest)</strong></caption>
 <colgroup>
 <col width="11%" />
 <col width="6%" />
@@ -390,7 +390,7 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 </table>
 <table class="kable_wrapper">
 <caption>
-<strong>Statistics By Class (Random Forest Model)</strong>
+<strong>Statistics By Class (Random Forest)</strong>
 </caption>
 <tbody>
 <tr>
@@ -481,7 +481,7 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;Boo
 </div>
 <div id="predicting-on-the-test-dataset" class="section level2">
 <h2>Predicting on the test Dataset</h2>
-<p>Now I will use the 2 best performing algorithms to predict how well individuals preform the dumbbell exercises using the test dataset for submission.</p>
+<p>Now I will use the 2 best performing algorithms to predict how well individuals perform the dumbbell exercises using the test dataset for submission.</p>
 <ol start="9" style="list-style-type: decimal">
 <li>Transforming the test dataset in the same way as training. Then using the Random Forest model for prediction</li>
 </ol>
@@ -589,7 +589,7 @@ identical(answers$testRF, answers$testGBM)</code></pre>
 </div>
 <div id="conclusion" class="section level2">
 <h2>Conclusion:</h2>
-<p>This analysis used accelerometer data to predict how well individuals perform dumbbell-lifting exercises. Three machine-learning algorithms were tested: CART, Random Forest, and Boosted GBM. The best performing algorithm was the Random Forest with <span class="math inline">\(99.3\%\)</span> accuracy, followed by the Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, and worst performing was the CART algorithm, which performed poorly compared to the other 2 with a <span class="math inline">\(72.4\%\)</span> accuracy.</p>
+<p>This analysis used accelerometer data to predict how well individuals perform dumbbell-lifting exercises. Three machine-learning algorithms were tested: CART, Random Forest, and GBM. The best performing algorithm was the Random Forest with <span class="math inline">\(99.3\%\)</span> accuracy, followed by the GBM with <span class="math inline">\(94.3\%\)</span> accuracy, and worst performing was the CART algorithm, which performed poorly compared to the other 2 with a <span class="math inline">\(72.4\%\)</span> accuracy.</p>
 </div>
 <div id="appendix" class="section level2">
 <h2>Appendix</h2>

@@ -65,7 +65,7 @@ The training dataset now contains $`r dim(training)[1]`$ observations of $`r dim
 
 ## Machine Learning Specifications  
 
-The following will test and compare the performance of 3 different machine learning algorithms: CART, Random Forest, and Boosted GBM. 
+The following will test and compare the performance of 3 different machine learning algorithms: CART, Random Forest, and GBM. 
 
 5. First Model: Classification and Regression Tree (CART)
 ```{r rcart}
@@ -107,7 +107,7 @@ Kappa        <- as.numeric(c(cm1$overall[2], cm2$overall[2], cm3$overall[2]))
 OOBError     <- 1 - Accuracy
 Time.Elapsed <- as.numeric(c(tm.1[3], tm.2[3], tm.3[3]))
 Results      <- rbind(Accuracy, Kappa, OOBError, Time.Elapsed)
-colnames(Results) <- c("CART", "Random Forest", "Boosted (GBM)")
+colnames(Results) <- c("CART", "Random Forest", "GBM")
 ```
 
 #### The calculated Accuracy rates, Kappas, and Out of Sample Error rates estimates for each specification are:  
@@ -121,13 +121,13 @@ Performance metrics indicate that the Random Forest is the best performing algor
 The following reports the Confusion Matrices for the 2 best performing algorithms in terms of accuracy. Class Specific statistics are for the Random Forest model only.   
 
 ```{r CMs, echo = FALSE}
-pander(cm3$table, caption = "**Confusion Matrix (GMB Model)**")
-pander(cm2$table, caption = "**Confusion Matrix (Random Forest Model)**")
+pander(cm3$table, caption = "**Confusion Matrix (GMB)**")
+pander(cm2$table, caption = "**Confusion Matrix (Random Forest)**")
 ```
 
 
 ```{r Stats, echo = FALSE}
-kable(list(t(cm2$byClass[,-c(5:7)])), caption = "**Statistics By Class (Random Forest Model)**", digits = 4)
+kable(list(t(cm2$byClass[,-c(5:7)])), caption = "**Statistics By Class (Random Forest)**", digits = 4)
 ```
   
 ## Predicting on the test Dataset  
@@ -160,7 +160,7 @@ kable(list(t(answers)), caption = "**Predictions on test Dataset**")
 ```
 
 ## Conclusion:   
-This analysis used accelerometer data to predict how well individuals perform dumbbell-lifting exercises. Three machine-learning algorithms were tested: CART, Random Forest, and Boosted GBM. The best performing algorithm was the Random Forest with $99.3\%$ accuracy, followed by the Boosted GBM with $94.3\%$ accuracy, and worst performing was the CART algorithm, which performed poorly compared to the other 2 with a $72.4\%$ accuracy. 
+This analysis used accelerometer data to predict how well individuals perform dumbbell-lifting exercises. Three machine-learning algorithms were tested: CART, Random Forest, and GBM. The best performing algorithm was the Random Forest with $99.3\%$ accuracy, followed by the GBM with $94.3\%$ accuracy, and worst performing was the CART algorithm, which performed poorly compared to the other 2 with a $72.4\%$ accuracy. 
 
 ## Appendix
 Fig 1. Correlation Matrix Visualization
