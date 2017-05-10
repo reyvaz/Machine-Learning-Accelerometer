@@ -20,7 +20,7 @@ The participants were asked to perform one set of 10 repetitions of the unilater
 The following tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict how well the dumbbell biceps curl were performed (variable classe in the dataset).  The best performing algorithm is a Random Forest specification with $99.3\%$ accuracy, followed by a Boosted GBM with $94.3\%$ accuracy, both in the cross-validation dataset. 
 
 1. Necessary packages
-```{r packs}
+```{r packs, cache = FALSE}
 library(caret); library(dplyr); library(knitr); library(pander)
 library(rpart); library(rpart.plot); library(gbm)
 library(randomForest); library(ggRandomForests); library(corrplot)
@@ -61,7 +61,7 @@ testing  = train[-inTrain,]
 ```
 
 **Pre-processing**  
-The training dataset now contains $`r dim(training)[1]`$ observations of $`r dim(training)[2]`$ variables, all cells with valid entries. Although correlation analysis, as seen in the correlation matrix figure in the appendix, shows a high correlation between a number of predictors, no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition (discarded) was able to capture $95\%$ of the variance by reducing the number of components by over $50\%$ but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.  
+The training dataset now contains $`r dim(training)[1]`$ observations of $`r dim(training)[2]`$ variables, all cells with valid entries. Although correlation analysis (as seen in the correlation matrix figure in the appendix), shows a high correlation between a number of predictors, no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition (discarded in this report) was able to capture $95\%$ of the variability by reducing the number of components by over $50\%$, but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.  
 
 ## Machine Learning Specifications  
 
@@ -116,7 +116,7 @@ colnames(Results) <- c("CART", "Random Forest", "GBM")
 kable(list(Results), caption = "**Model Performance**", digits = 4)
 ```
 
-Performance metrics indicate that the Random Forest is the best performing algorithm tested here for this purpose with an accuracy rate of $`r cm2$overall[1]`$. It is followed by the GBM algorithm with an accuracy rate of $`r cm3$overall[1]`$. And last, is the CART algorithm which performed poorly compared to the other 2 with an accuracy rate of $`r cm1$overall[1]`$. In terms of time efficiency, the Random Forest specification is about 7 times faster than GBM.   
+Performance metrics indicate that the Random Forest is the best performing algorithm tested here for this purpose with an accuracy rate of $`r cm2$overall[1]`$. It is followed by the GBM algorithm with an accuracy rate of $`r cm3$overall[1]`$. And last, is the CART algorithm which performed poorly compared to the other two with an accuracy rate of $`r cm1$overall[1]`$. In terms of time efficiency, the Random Forest specification is about 7 times faster than GBM.   
 
 The following reports the Confusion Matrices for the 2 best performing algorithms in terms of accuracy. Class Specific statistics are for the Random Forest model only.   
 
@@ -149,18 +149,18 @@ probs2   <- predict(gbm1, test, n.trees = best.iter, type = "response")
 indexes2 <- apply(probs2, 1, which.max)
 testGBM  <- as.factor(colnames(probs2)[indexes2])
 answers  <- cbind.data.frame(testRF, testGBM)
-identical(answers$testRF, answers$testGBM)
+colnames(answers) <- c("Random Forest:", "Boosted (GBM)")
+identical(answers[,1], answers[,2])
 ```
 
 The RF and the GBM predictions are identical. The answers to be submitted are:   
 
-```{r pred}
-colnames(answers) <- c("Random Forest:", "Boosted (GBM)")
+```{r pred, echo = FALSE}
 kable(list(t(answers)), caption = "**Predictions on test Dataset**")
 ```
 
 ## Conclusion:   
-This analysis used accelerometer data to predict how well individuals perform dumbbell-lifting exercises. Three machine-learning algorithms were tested: CART, Random Forest, and GBM. The best performing algorithm was the Random Forest with $99.3\%$ accuracy, followed by the GBM with $94.3\%$ accuracy, and worst performing was the CART algorithm, which performed poorly compared to the other 2 with a $72.4\%$ accuracy. 
+This analysis used accelerometer data to predict how well individuals perform dumbbell-lifting exercises. Three machine-learning algorithms were tested: CART, Random Forest, and GBM. The best performing algorithm was the Random Forest with $99.3\%$ accuracy, followed by the GBM with $94.3\%$ accuracy, and worst performing was the CART algorithm, which performed poorly compared to the other two with a $72.4\%$ accuracy. 
 
 ## Appendix
 Fig 1. Correlation Matrix Visualization
