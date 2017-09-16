@@ -27,7 +27,7 @@ The training dataset is available [here](https://d396qusza40orc.cloudfront.net/p
 <center>
 <a href="https://reyvaz.github.io/Machine-Learning-Accelerometer/barbellRmd.html" rel="see html report">
 <img src="barbellRmd_files/figure-html/plot0-1.png" alt="Drawing" 
-style="width: 600px;"/></a>
+style="width: 800px;"/></a>
 </center>
 
 <br><br>
