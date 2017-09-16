@@ -12,7 +12,7 @@
 <meta name="author" content="Reynaldo" />
 
 
-<title>Machine Learning Exercise</title>
+<title>Machine Learning on Accelerometer Data</title>
 
 <script src="barbellRmd_files/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -116,7 +116,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Machine Learning Exercise</h1>
+<h1 class="title toc-ignore">Machine Learning on Accelerometer Data</h1>
 <h4 class="author"><em>Reynaldo</em></h4>
 <h4 class="date"><em>5/9/2017</em></h4>
 
@@ -127,7 +127,7 @@ $(document).ready(function () {
 <h2>Summary</h2>
 <p>This analysis uses different machine learning algorithms on accelerometer data to predict the way individuals perform weight-lifting exercises. The dataset comes from Veloso et al., (2013) and it contains data from accelerometers on the belt, forearm, arm, and dumbbell from 6 individuals.</p>
 <p>The individuals were asked to perform one set of 10 repetitions of the unilateral dumbbell biceps curl in five different ways: (A) correctly; (B) throwing the elbows to the front; (C) lifting the dumbbell only halfway; (D) lowering the dumbbell only halfway; and (E) throwing the hips to the front.</p>
-<p>The following tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict the way dumbbell biceps curls were performed. The best performing algorithm is a Random Forest specification with <span class="math inline">\(99.3\%\)</span> accuracy, followed by a Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, both in the cross-validation dataset.</p>
+<p>The following analysis tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict the way dumbbell biceps curls were performed. The best performing algorithm is a Random Forest specification with <span class="math inline">\(99.3\%\)</span> accuracy, followed by a Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, in the cross-validation dataset.</p>
 <ol style="list-style-type: decimal">
 <li>Necessary packages</li>
 </ol>
@@ -653,7 +653,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
