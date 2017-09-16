@@ -1,5 +1,5 @@
 ---
-title: "Machine Learning Exercise"
+title: "Machine Learning on Accelerometer Data"
 author: "Reynaldo"
 date: "5/9/2017"
 output: 
