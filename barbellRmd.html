@@ -125,9 +125,9 @@ $(document).ready(function () {
 
 <div id="summary" class="section level2">
 <h2>Summary</h2>
-<p>This analysis uses different machine learning algorithms on accelerometer data to predict how well individuals perform weight-lifting exercises. The dataset comes from Veloso et al., (2013) and it contains data from accelerometers on the belt, forearm, arm, and dumbbell from 6 individuals.</p>
-<p>The participants were asked to perform one set of 10 repetitions of the unilateral dumbbell biceps curl in five different ways: according to specification (class A), throwing the elbows to the front (B), lifting the dumbbell only halfway (C), lowering the dumbbell only halfway (D), and throwing the hips to the front (E).</p>
-<p>The following tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict how well the dumbbell biceps curl were performed (variable classe in the dataset). The best performing algorithm is a Random Forest specification with <span class="math inline">\(99.3\%\)</span> accuracy, followed by a Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, both in the cross-validation dataset.</p>
+<p>This analysis uses different machine learning algorithms on accelerometer data to predict the way individuals perform weight-lifting exercises. The dataset comes from Veloso et al., (2013) and it contains data from accelerometers on the belt, forearm, arm, and dumbbell from 6 individuals.</p>
+<p>The individuals were asked to perform one set of 10 repetitions of the unilateral dumbbell biceps curl in five different ways: (A) correctly; (B) throwing the elbows to the front; (C) lifting the dumbbell only halfway; (D) lowering the dumbbell only halfway; and (E) throwing the hips to the front.</p>
+<p>The following tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict the way dumbbell biceps curls were performed. The best performing algorithm is a Random Forest specification with <span class="math inline">\(99.3\%\)</span> accuracy, followed by a Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, both in the cross-validation dataset.</p>
 <ol style="list-style-type: decimal">
 <li>Necessary packages</li>
 </ol>
@@ -149,7 +149,7 @@ str(train)</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Discard variables<br />
 a. discard variables with near zero variance<br />
-b. discard variables irrelevant to prediction, columns 1-6<br />
+b. discard variables irrelevant to prediction (remaining columns 1-6).<br />
 c. discard variables with 80% NAs or more</li>
 </ol>
 <pre class="r"><code>nrzv  &lt;- nearZeroVar(train)
@@ -167,7 +167,7 @@ inTrain  = createDataPartition(train$classe, p = 3/5)[[1]]
 training = train[ inTrain,]
 testing  = train[-inTrain,]</code></pre>
 <p><strong>Pre-processing</strong><br />
-The training dataset now contains <span class="math inline">\(11776\)</span> observations of <span class="math inline">\(53\)</span> variables, all cells with valid entries. Although correlation analysis (as seen in the correlation matrix figure in the appendix), shows a high correlation between a number of predictors, no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition (discarded in this report) was able to capture <span class="math inline">\(95\%\)</span> of the variability by reducing the number of components by over <span class="math inline">\(50\%\)</span>, but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.</p>
+The training dataset now contains <span class="math inline">\(11776\)</span> observations of <span class="math inline">\(53\)</span> variables, all cells with valid entries. Although correlation analysis shows a high correlation between a number of predictors (as seen in the visualization in the appendix), no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition (discarded in this report) was able to capture <span class="math inline">\(95\%\)</span> of the variability by reducing the number of components by over <span class="math inline">\(50\%\)</span>, but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.</p>
 </div>
 <div id="machine-learning-specifications" class="section level2">
 <h2>Machine Learning Specifications</h2>
@@ -183,7 +183,7 @@ cm1       &lt;- confusionMatrix(testrpart, testing$classe)</code></pre>
 <li>Second Model: Random Forest (RF)</li>
 </ol>
 <pre class="r"><code>tm.2    &lt;- system.time(
-rfm     &lt;- randomForest(training[,-length(training)], training[,length(training)], ntree = 500)    )
+rfm     &lt;- randomForest(training[,-length(training)], training[,length(training)], ntree = 500))
 testrfm &lt;- predict(rfm, newdata = testing[,-length(testing)])
 cm2     &lt;- confusionMatrix(testrfm, testing$classe)</code></pre>
 <ol start="7" style="list-style-type: decimal">
@@ -201,7 +201,7 @@ cm3       &lt;- confusionMatrix(testgbm, testing$classe)</code></pre>
 </div>
 <div id="algorithm-performance-comparison" class="section level2">
 <h2>Algorithm Performance Comparison</h2>
-<p>The following are some extractions from the Confusion Matrix for each specification. These calculations were done on the cross-validation dataset and should be an unbiased estimate of out of sample performance.</p>
+<p>The following are some extractions from the Confusion Matrix output for each specification. These calculations were done on the cross-validation dataset (except time elapsed) and should be an unbiased estimate of out of sample performance.</p>
 <ol start="8" style="list-style-type: decimal">
 <li>Performance Comparison</li>
 </ol>
@@ -212,7 +212,7 @@ Time.Elapsed &lt;- as.numeric(c(tm.1[3], tm.2[3], tm.3[3]))
 Results      &lt;- rbind(Accuracy, Kappa, OOBError, Time.Elapsed)
 colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;GBM&quot;)</code></pre>
 <div id="the-calculated-accuracy-rates-kappas-and-out-of-sample-error-rates-estimates-for-each-specification-are" class="section level4">
-<h4>The calculated Accuracy rates, Kappas, and Out of Sample Error rates estimates for each specification are:</h4>
+<h4>The calculated Accuracy rates, Kappas, and Out-of-Sample Error rates estimates for each specification are:</h4>
 <table class="kable_wrapper">
 <caption>
 <strong>Model Performance</strong>
@@ -260,8 +260,8 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;GBM
 </tr>
 </tbody>
 </table>
-<p>Performance metrics indicate that the Random Forest is the best performing algorithm tested here for this purpose with an accuracy rate of <span class="math inline">\(0.9933724\)</span>. It is followed by the GBM algorithm with an accuracy rate of <span class="math inline">\(0.9434107\)</span>. And last, is the CART algorithm which performed poorly compared to the other two with an accuracy rate of <span class="math inline">\(0.7243181\)</span>. In terms of time efficiency, the Random Forest specification is about 7 times faster than GBM.</p>
-<p>The following reports the Confusion Matrices for the 2 best performing algorithms in terms of accuracy. Class Specific statistics are for the Random Forest model only.</p>
+<p>Performance metrics indicate that the Random Forest is the best performing algorithm tested here for this purpose with an accuracy rate of <span class="math inline">\(0.993245\)</span>. It is followed by the GBM algorithm with an accuracy rate of <span class="math inline">\(0.9434107\)</span>. And last, is the CART algorithm which performed poorly compared to the other two with an accuracy rate of <span class="math inline">\(0.7243181\)</span>. In terms of time efficiency, the Random Forest specification is about 7 times faster than GBM.</p>
+<p>The following reports the Confusion Matrices for the two best performing algorithms in terms of accuracy. Class Specific statistics are for the Random Forest model only.</p>
 <table style="width:46%;">
 <caption><strong>Confusion Matrix (GMB)</strong></caption>
 <colgroup>
@@ -481,7 +481,7 @@ colnames(Results) &lt;- c(&quot;CART&quot;, &quot;Random Forest&quot;, &quot;GBM
 </div>
 <div id="predicting-on-the-test-dataset" class="section level2">
 <h2>Predicting on the test Dataset</h2>
-<p>Now I will use the 2 best performing algorithms to predict how well individuals perform the dumbbell exercises using the test dataset for submission.</p>
+<p>Now I will use the two best performing algorithms to predict how well individuals perform the dumbbell exercises using the test dataset for submission.</p>
 <ol start="9" style="list-style-type: decimal">
 <li>Transforming the test dataset in the same way as training. Then using the Random Forest model for prediction</li>
 </ol>
@@ -594,20 +594,20 @@ identical(answers[,1], answers[,2])</code></pre>
 </div>
 <div id="appendix" class="section level2">
 <h2>Appendix</h2>
-<p>Fig 1. Correlation Matrix Visualization</p>
+<p>Fig 1. Correlation matrix visualization</p>
 <pre class="r"><code>par(xpd=TRUE)
 corrplot.mixed(cor(training[,-length(training)]), lower=&quot;color&quot;, upper=&quot;circle&quot;, mar=c(1,1,1,1),
                tl.pos=&quot;lt&quot;, diag=&quot;n&quot;, title = &quot;Correlation Matrix Visualization&quot;,
                order=&quot;hclust&quot;, hclust.method=&quot;complete&quot;, tl.cex = .65, tl.col =&quot;#656565&quot;)</code></pre>
 <p><img src="barbellRmd_files/figure-html/plotcorr-1.png" width="720" style="display: block; margin: auto;" /></p>
-<p>Fig 2. RPart Decision Tree</p>
+<p>Fig 2. Rpart decision tree</p>
 <pre class="r"><code>rpart.plot(rpart1, main=&quot;Decision Tree (rpart)&quot;, type = 1, extra=0, cex = NULL, 
            tweak = 1, fallen.leaves = FALSE, shadow.col = &quot;#e0e0e0&quot;, box.palette = mycolors)</code></pre>
 <p><img src="barbellRmd_files/figure-html/plot1-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>Fig 3. Random Forest OOB Error Rate</p>
+<p>Fig 3. Random Forest oob error rate</p>
 <pre class="r"><code>plot(gg_error(rfm)) + theme_bw() + scale_y_continuous(limits=c(0,.05)) + ggtitle(&quot;OOB Error Rate (Random Forest)&quot;) + geom_line(size=.75)</code></pre>
 <p><img src="barbellRmd_files/figure-html/rf1-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Fig 4. Variables of Importance (Random Forest)</p>
+<p>Fig 4. Variables of importance (Random Forest)</p>
 <pre class="r"><code>vimp &lt;- varImp(rfm); vimp &lt;- cbind(measure = rownames(vimp), vimp)
 vimp &lt;- arrange(vimp, desc(Overall))
 vimp$measure &lt;- factor(vimp$measure, levels = vimp$measure)
@@ -617,7 +617,7 @@ ggplot(vimp[1:12,], aes(measure, Overall)) + theme_bw() +
         xlab(&quot;Measure&quot;) + 
         ggtitle(&quot;Top 12 Variables of Importance (Random Forest)&quot;)</code></pre>
 <p><img src="barbellRmd_files/figure-html/rf2-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Fig 5. Variables of Importance (GBM)</p>
+<p>Fig 5. Variables of importance (GBM)</p>
 <pre class="r"><code>vimp2 &lt;- head(summary(gbm1, plotit = FALSE), 12)
 vimp2$var &lt;- factor(vimp2$var, levels = vimp2$var)
 ggplot(vimp2, aes(var, rel.inf)) + theme_bw() +
