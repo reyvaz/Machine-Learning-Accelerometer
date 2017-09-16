@@ -1,5 +1,5 @@
 
-[**CLICK HERE to see report in html**](https://reyvaz.github.io/MachineLearningWL/barbellRmd.html)  
+[**CLICK HERE to see report in html**](https://reyvaz.github.io/Machine-Learning-Accelerometer/barbellRmd.html)  
 
 
 ## Machine Learning on Accelerometer Data
@@ -14,18 +14,18 @@ The best performing algorithm is a Random Forest specification with $99.3\%$ acc
 
 The training dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv). And the test dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv).    
 
-* The rendered html version of the code is found  [here](https://reyvaz.github.io/MachineLearningWL/barbellRmd.html). 
+* The rendered html version of the code is found  [here](https://reyvaz.github.io/Machine-Learning-Accelerometer/barbellRmd.html). 
 
 * To reproduce the results, source the  [barbellRmd.Rmd](barbellRmd.Rmd) file with the downloaded data files 
 
 * The file [barbellRmd.md](barbellRmd.md) contains the code and output rendered in a markdown file. 
 
-* [GitHub Pages Link](https://reyvaz.github.io/MachineLearningWL/)
+* [GitHub Pages Link](https://reyvaz.github.io/Machine-Learning-Accelerometer/)
 
 <br><br>
 
 <center>
-<a href="https://reyvaz.github.io/MachineLearningWL/barbellRmd.html" rel="see html report">
+<a href="https://reyvaz.github.io/Machine-Learning-Accelerometer/barbellRmd.html" rel="see html report">
 <img src="barbellRmd_files/figure-html/plot0-1.png" alt="Drawing" 
 style="width: 600px;"/></a>
 </center>
