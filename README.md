@@ -10,7 +10,7 @@ The dataset comprises information on 6 participants who were asked to perform on
 
 The code in this repository processes the data and constructs 3 different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict the way dumbbell biceps curls were performed. 
 
-The best performing algorithm is a Random Forest specification with $99.3\%$ accuracy, followed by a Boosted GBM with $94.3\%$ accuracy, in the cross-validation dataset.
+The best performing algorithm is a Random Forest specification with 99.3\% accuracy, followed by a Boosted GBM with 94.3% accuracy.
 
 The training dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv). And the test dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv).    
 
@@ -21,6 +21,8 @@ The training dataset is available [here](https://d396qusza40orc.cloudfront.net/p
 * The file [barbellRmd.md](barbellRmd.md) contains the code and output rendered in a markdown file. 
 
 * [GitHub Pages Link](https://reyvaz.github.io/Machine-Learning-Accelerometer/)
+
+* README.md this file
 
 <br><br>
 
