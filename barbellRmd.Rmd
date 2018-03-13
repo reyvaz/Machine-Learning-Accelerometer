@@ -17,7 +17,7 @@ This analysis uses different machine learning algorithms on accelerometer data t
 
 The individuals were asked to perform one set of 10 repetitions of the unilateral dumbbell biceps curl in five different ways: (A) correctly; (B) throwing the elbows to the front; (C) lifting the dumbbell only halfway; (D) lowering the dumbbell only halfway; and (E) throwing the hips to the front.  
 
-The following analysis tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict the way dumbbell biceps curls were performed.  The best performing algorithm is a Random Forest specification with $99.3\%$ accuracy, followed by a Boosted GBM with $94.3\%$ accuracy, in the cross-validation dataset. 
+The following analysis tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict the way dumbbell biceps curls were performed.  The best performing algorithm is a Random Forest specification with $99.3\%$ accuracy, followed by a Boosted GBM with $94.3\%$ accuracy, in the test dataset. 
 
 1. Necessary packages
 ```{r packs, cache = FALSE}
@@ -49,10 +49,10 @@ xNAs  <- which(colMeans(is.na(train)) > .8)
 train <- train[, -xNAs]
 ```
 
-**Cross-validation dataset**  
-Data is then split into a training dataset with 60% of observations for model training, and a testing dataset with the remaining 40% of observations for cross-validation.   
+**Dataset Split**  
+Data is then split into a training dataset with 60% of instances for model training, and a testing dataset with the remaining 40% of instances.   
 
-4. Split data for cross-validation
+4. Split data for training and testing
 ```{r split, results = "hide"}
 set.seed(400)
 inTrain  = createDataPartition(train$classe, p = 3/5)[[1]]
@@ -98,7 +98,7 @@ cm3       <- confusionMatrix(testgbm, testing$classe)
 
 ## Algorithm Performance Comparison
 
-The following are some extractions from the Confusion Matrix output for each specification. These calculations were done on the cross-validation dataset (except time elapsed) and should be an unbiased estimate of out of sample performance.  
+The following are some extractions from the Confusion Matrix output for each specification. These calculations were done on the test dataset (except time elapsed) and should be an unbiased estimate of out of sample performance.  
 
 8. Performance Comparison
 ```{r Performance}

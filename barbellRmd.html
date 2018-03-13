@@ -127,7 +127,7 @@ $(document).ready(function () {
 <h2>Summary</h2>
 <p>This analysis uses different machine learning algorithms on accelerometer data to predict the way individuals perform weight-lifting exercises. The dataset comes from Veloso et al., (2013) and it contains data from accelerometers on the belt, forearm, arm, and dumbbell from 6 individuals.</p>
 <p>The individuals were asked to perform one set of 10 repetitions of the unilateral dumbbell biceps curl in five different ways: (A) correctly; (B) throwing the elbows to the front; (C) lifting the dumbbell only halfway; (D) lowering the dumbbell only halfway; and (E) throwing the hips to the front.</p>
-<p>The following analysis tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict the way dumbbell biceps curls were performed. The best performing algorithm is a Random Forest specification with <span class="math inline">\(99.3\%\)</span> accuracy, followed by a Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, in the cross-validation dataset.</p>
+<p>The following analysis tests different machine learning algorithms, including CART, Random Forest, and Boosted (GBM) to predict the way dumbbell biceps curls were performed. The best performing algorithm is a Random Forest specification with <span class="math inline">\(99.3\%\)</span> accuracy, followed by a Boosted GBM with <span class="math inline">\(94.3\%\)</span> accuracy, in the test dataset.</p>
 <ol style="list-style-type: decimal">
 <li>Necessary packages</li>
 </ol>
@@ -157,10 +157,10 @@ train &lt;- train[,-nrzv]
 train &lt;- train[, -c(1:6)]
 xNAs  &lt;- which(colMeans(is.na(train)) &gt; .8)
 train &lt;- train[, -xNAs]</code></pre>
-<p><strong>Cross-validation dataset</strong><br />
-Data is then split into a training dataset with 60% of observations for model training, and a testing dataset with the remaining 40% of observations for cross-validation.</p>
+<p><strong>Dataset Split</strong><br />
+Data is then split into a training dataset with 60% of instances for model training, and a testing dataset with the remaining 40% of instances.</p>
 <ol start="4" style="list-style-type: decimal">
-<li>Split data for cross-validation</li>
+<li>Split data for training and testing</li>
 </ol>
 <pre class="r"><code>set.seed(400)
 inTrain  = createDataPartition(train$classe, p = 3/5)[[1]]
@@ -201,7 +201,7 @@ cm3       &lt;- confusionMatrix(testgbm, testing$classe)</code></pre>
 </div>
 <div id="algorithm-performance-comparison" class="section level2">
 <h2>Algorithm Performance Comparison</h2>
-<p>The following are some extractions from the Confusion Matrix output for each specification. These calculations were done on the cross-validation dataset (except time elapsed) and should be an unbiased estimate of out of sample performance.</p>
+<p>The following are some extractions from the Confusion Matrix output for each specification. These calculations were done on the test dataset (except time elapsed) and should be an unbiased estimate of out of sample performance.</p>
 <ol start="8" style="list-style-type: decimal">
 <li>Performance Comparison</li>
 </ol>
