@@ -20,8 +20,6 @@ The dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachle
 
 * To reproduce the results, source the  [barbellRmd.Rmd](barbellRmd.Rmd) file with the downloaded data files 
 
-* The file [barbellRmd.md](barbellRmd.md) contains the code and output rendered in a markdown file. 
-
 * [GitHub Pages Link](https://reyvaz.github.io/Machine-Learning-Accelerometer/)
 
 * README.md this file
