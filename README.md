@@ -1,6 +1,10 @@
+<br>
 
 [**CLICK HERE to see report in html**](https://reyvaz.github.io/Machine-Learning-Accelerometer/barbellRmd.html)  
 
+<br>
+
+**UPDATE:** New and adjusted specifications on the original dataset attain **accuracies of over 99.9%**, with precision, recall, and F1 of over 99.9% as well on all classes. See the analysis in this  [Jupyter Notebook](http://nbviewer.jupyter.org/github/reyvaz/Qualifying-Human-Activity/blob/master/qualifying_workouts.ipynb), or check out the repo [here](https://github.com/reyvaz/Qualifying-Human-Activity).
 
 ## Machine Learning on Accelerometer Data
 
