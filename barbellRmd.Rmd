@@ -12,6 +12,11 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE, warning=FALSE, message=FALSE, c
                       fig.align = 'center')
 ```
 
+<br>
+
+**UPDATE:** New and adjusted specifications on the original dataset attain **accuracies of over 99.9%**, with precision, recall, and F1 of over 99.9% as well on all classes. See the analysis in this  [Jupyter Notebook](http://nbviewer.jupyter.org/github/reyvaz/Qualifying-Human-Activity/blob/master/qualifying_workouts.ipynb), or check out the repo [here](https://github.com/reyvaz/Qualifying-Human-Activity).
+
+
 ## Summary  
 This analysis uses different machine learning algorithms on accelerometer data to predict the way individuals perform weight-lifting exercises. The dataset comes from Veloso et al., (2013) and it contains data from accelerometers on the belt, forearm, arm, and dumbbell from 6 individuals.
 
@@ -33,7 +38,7 @@ The dataset is available [here](https://d396qusza40orc.cloudfront.net/predmachle
 ```{r data, results = "hide"}
 data <- read.csv("pml-training.csv")
 ```
-The original dataset contains $`r dim(data)[1]`$ observations of $`r dim(data)[2]`$ variables. Preliminary analysis found: (a) a large number of variables with near zero variability; (b) the first columns contain recording and identification data irrelevant to the prediction; and (c) a significant number of variables with less than $10\%$ of valid observations. The variables with these characteristics are thus discarded.  
+Preliminary analysis found: (a) a large number of variables with near zero variability; (b) the first columns contain recording and identification data irrelevant to the prediction; and (c) a significant number of variables with less than $10\%$ of valid observations. The variables with these characteristics are thus discarded.  
 
 3. Discard variables    
         a. discard variables with near zero variance      
@@ -58,8 +63,7 @@ training = data[ inTrain,]
 testing  = data[-inTrain,]
 ```
 
-**Pre-processing**  
-The training dataset now contains $`r dim(training)[1]`$ observations of $`r dim(training)[2]`$ variables, all cells with valid entries. Although correlation analysis shows a high correlation between a number of predictors (as seen in the visualization in the appendix), no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition (discarded in this report) was able to capture $95\%$ of the variability by reducing the number of components by over $50\%$, but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.  
+Although correlation analysis shows a high correlation between a number of predictors (as seen in the visualization in the appendix), no further manual pre-processing will be performed for the remaining of the analysis. As a note, PCA decomposition (discarded in this report) was able to capture $95\%$ of the variability by reducing the number of components by over $50\%$, but accuracy was significantly compromised, while expediency gains were only minor. Because of the nature of decision trees (i.e. they can branch at equivalent splitting points) scaling or translational normalization is not necessary. Furthermore, they are also robust to correlated variates.  
 
 ## Machine Learning Specifications  
 
